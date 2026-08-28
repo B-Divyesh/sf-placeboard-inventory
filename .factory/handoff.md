@@ -58,6 +58,16 @@ Verification completed on 2026-08-28:
   covered by the deployment-policy unit test.
 - The build contains only same-origin assets plus the explicit Sociobot billing
   endpoint in `connect-src`; normal inventory flows make no third-party request.
+- **Production deployment:** deployed with `/opt/fleet/lib/deploy-static.sh
+  placeboard-inventory dist` to `https://placeboard-inventory.sociobot.in`.
+  The live document references `assets/index-DU6DI1jj.js`; its SHA-256 is
+  `95dd60b061935f0d478ad200520d95065e6b9c0d5e4de467ac7d30b28aa455e8`,
+  exactly matching `dist`. Live JS and CSS return `public, max-age=31536000,
+  immutable`; `sw.js` returns `no-cache, no-store, must-revalidate`. Live
+  `/demo` passed `verify-url.sh` (HTTP 200, no console errors, title/lang/main/
+  h1/alt/button checks) and all documented app, legal, PWA, manifest, robots,
+  and sitemap routes returned HTTP 200. Evidence is in
+  `.factory/evidence-live-repair/`.
 
 ## Known limits
 
@@ -66,6 +76,3 @@ Verification completed on 2026-08-28:
   clearing site data or moving devices.
 - The supporter product must be registered by the factory before live checkout
   can sell licenses. No billing secret or payment-provider code is present.
-- Deployment, DNS, and live-origin header confirmation are factory operations;
-  this repair includes the static deployment configuration and regression test
-  required for the immutable asset policy.
