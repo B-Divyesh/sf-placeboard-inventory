@@ -28,6 +28,6 @@ test('only real application routes rewrite to the SPA and unknown paths use the 
   expect(notFound).toContain('<footer>');
   expect(notFound).toContain('href="/privacy"');
   expect(notFound).toContain('href="/terms"');
-  expect(notFound).toContain('v1.1.0');
+  expect(notFound).toContain('v1.1.1 · polish-2');
   expect(notFound).toContain('Return home');
 });

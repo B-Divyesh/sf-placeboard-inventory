@@ -57,7 +57,7 @@ function header(path: string): string {
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><div class="shell footer-grid"><div>Find shared household items by place.<br><small>Original generated imagery · v1.1.0 · polish-1</small></div><div class="footer-links"><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in">Built by Param Factory <span class="sr-only">(external site)</span></a></div></div></footer>`;
+  return `<footer class="site-footer"><div class="shell footer-grid"><div>Find household items by place.<br><small>Original generated imagery · v1.1.1 · polish-2</small></div><div class="footer-links"><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in">Built by Param Factory <span class="sr-only">(external site)</span></a></div></div></footer>`;
 }
 
 function layout(path: string, content: string, demoBanner = false): void {

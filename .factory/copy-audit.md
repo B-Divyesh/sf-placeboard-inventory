@@ -36,7 +36,7 @@ Audited 2026-08-28. Counts treat hyphenated terms as one word.
 | Export JSON or CSV whenever you want a backup. | 9 | Pass |
 | What Placeboard does not do | 5 | Pass |
 | It does not value items or run a warehouse. | 9 | Pass: scope disclaimer |
-| Find shared household items by place. | 6 | Pass |
+| Find household items by place. | 6 | Pass |
 | Original generated imagery. | 3 | Pass |
 | Built by Param Factory | 4 | Pass |
 
