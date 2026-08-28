@@ -39,10 +39,10 @@ a:hover { color: var(--ink); }
 .mark { width: 34px; height: 34px; border: 2px solid var(--cyan); box-shadow: 3px 3px 0 var(--pink); display: grid; place-items: center; clip-path: polygon(0 0, 86% 0,100% 26%,100% 100%,14% 100%,0 74%); }
 .mark::before { content: ""; width: 16px; height: 10px; border-block: 4px solid var(--amber); }
 .site-nav { display: flex; align-items: center; gap: 18px; }
-.site-nav a { color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: none; }
+.site-nav a { color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
 .site-nav a[aria-current="page"] { color: var(--cyan); }
 .demo-banner { background: var(--amber); color: var(--amber-ink); padding: 8px 16px; text-align: center; font-weight: 700; }
-.demo-banner button { background: transparent; border: 0; color: inherit; min-height: 32px; text-decoration: underline; cursor: pointer; margin-left: 16px; }
+.demo-banner button { background: transparent; border: 0; color: inherit; min-height: 44px; text-decoration: underline; cursor: pointer; margin-left: 16px; }
 main { min-height: 70vh; }
 h1, h2, h3 { font-family: var(--display); line-height: .98; letter-spacing: .025em; text-transform: uppercase; margin: 0; }
 h1 { font-size: clamp(2.75rem, 8vw, 5rem); max-width: 12ch; }
@@ -86,6 +86,7 @@ button.danger { background: transparent; color: var(--danger); border-color: var
 .site-footer { border-top: 1px solid var(--line); padding: 36px 0; color: var(--muted); }
 .footer-grid { display: flex; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
 .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer-links a { min-height: 44px; display: inline-flex; align-items: center; }
 
 /* Inventory workbench */
 .workspace { padding-block: 48px 88px; }
@@ -95,6 +96,8 @@ button.danger { background: transparent; color: var(--danger); border-color: var
 .toolbar button, .toolbar .button { font-size: 14px; }
 .notice { padding: 12px 16px; margin: 16px 0; background: var(--stall-raised); border-left: 4px solid var(--green); }
 .notice.error { border-color: var(--danger); }
+.notice.move-ticket::before { content: "→"; display: inline-block; color: var(--pink); margin-right: 10px; animation: ticket-travel 240ms ease-out both; }
+@keyframes ticket-travel { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
 .search-wrap { position: relative; margin-bottom: 24px; }
 .search-wrap label { display: block; font-weight: 800; margin-bottom: 8px; color: var(--cyan); }
 .search-wrap input { width: 100%; min-height: 58px; border: 2px solid var(--cyan); background: #0a0910; color: var(--ink); padding: 12px 16px; font-size: 20px; border-radius: 0; }
@@ -108,7 +111,8 @@ button.danger { background: transparent; color: var(--danger); border-color: var
 .place-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 10px 10px 10px 14px; margin-block: 7px; background: var(--stall-raised); border-left: 4px solid var(--cyan); }
 .place-row a { color: var(--ink); font-weight: 750; text-decoration: none; }
 .place-row small { display: block; color: var(--muted); }
-.place-row .label-link { color: var(--amber); font-size: 13px; text-decoration: underline; }
+.place-row > a:first-child, .place-row .label-link { min-height: 44px; display: flex; flex-direction: column; justify-content: center; }
+.place-row .label-link { color: var(--amber); font-size: 13px; text-decoration: underline; min-width: 44px; align-items: center; }
 .item-list, .move-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .item-card { background: var(--stall-raised); padding: 16px; border-left: 4px solid var(--amber); display: grid; grid-template-columns: 1fr auto; gap: 12px; }
 .item-card h3 { font-family: var(--body); text-transform: none; letter-spacing: 0; }
@@ -116,7 +120,7 @@ button.danger { background: transparent; color: var(--danger); border-color: var
 .location-line { color: var(--ink) !important; }
 .quantity { color: var(--amber); font-weight: 900; font-size: 20px; font-variant-numeric: tabular-nums; }
 .item-actions { display: flex; flex-direction: column; align-items: end; gap: 8px; }
-.text-button { border: 0; background: transparent; color: var(--cyan); text-decoration: underline; cursor: pointer; min-height: 36px; padding: 2px 0; }
+.text-button { border: 0; background: transparent; color: var(--cyan); text-decoration: underline; cursor: pointer; min-height: 44px; padding: 2px 0; }
 .empty { padding: 30px 20px; text-align: center; border: 1px dashed var(--line); color: var(--muted); }
 .move-list { margin-top: 16px; }
 .move-list li { padding: 12px 0; border-top: 1px solid var(--line); }
@@ -125,7 +129,8 @@ button.danger { background: transparent; color: var(--danger); border-color: var
 .data-panel { margin-top: 24px; }
 .data-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .file-button input { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; }
-.offline-status { position: fixed; right: 18px; bottom: 18px; z-index: 30; padding: 8px 12px; background: var(--amber); color: var(--amber-ink); font-weight: 800; box-shadow: 3px 3px 0 #000; }
+.offline-status, .update-status { position: fixed; right: 18px; bottom: 18px; z-index: 30; padding: 8px 12px; background: var(--amber); color: var(--amber-ink); font-weight: 800; box-shadow: 3px 3px 0 #000; }
+.update-status button { border: 0; background: transparent; color: inherit; text-decoration: underline; cursor: pointer; }
 
 dialog { width: min(560px, calc(100% - 32px)); border: 2px solid var(--cyan); background: var(--stall); color: var(--ink); padding: 0; box-shadow: 10px 10px 0 #0a090f; }
 dialog::backdrop { background: rgb(5 5 10 / .82); }

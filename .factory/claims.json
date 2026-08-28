@@ -22,10 +22,24 @@
   },
   {
     "id": "multi-location-move",
-    "claim": "One item can have quantities in several places, and moves update both counts.",
+    "claim": "One item can have quantities in several places; moves update counts and keep dated history, including stock entering or leaving.",
     "where": "live preview, how it works, README",
     "test": "npm test -- --grep @claim:multi-location-move",
     "sandbox": "fresh /demo; move two batteries and assert both place quantities plus history"
+  },
+  {
+    "id": "place-tree",
+    "claim": "Builds a nested place tree for homes, rooms, shelves, and bins.",
+    "where": "inventory place tree, README",
+    "test": "npm test -- --grep @claim:place-tree",
+    "sandbox": "fresh /demo; assert nested Home, Garage, and Red tool bin relationships"
+  },
+  {
+    "id": "quick-search",
+    "claim": "Searches item names, notes, and full place paths.",
+    "where": "inventory search, README",
+    "test": "npm test -- --grep @claim:quick-search",
+    "sandbox": "fresh /demo; search separately by an item name, note, and nested place name"
   },
   {
     "id": "csv-export",
@@ -40,6 +54,13 @@
     "where": "data tools, landing privacy section, README",
     "test": "npm test -- --grep @claim:json-export",
     "sandbox": "fresh /demo; download JSON and assert places, items, stocks, and moves"
+  },
+  {
+    "id": "file-import",
+    "claim": "Imports Placeboard JSON and CSV files.",
+    "where": "data tools, README",
+    "test": "npm test -- --grep @claim:file-import",
+    "sandbox": "fresh /demo; import a small CSV, assert the result, then import a JSON export and assert its data"
   },
   {
     "id": "print-labels",

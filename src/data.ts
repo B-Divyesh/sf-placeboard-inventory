@@ -149,6 +149,35 @@ export function validateImport(value: unknown): InventoryData {
   if (data.version !== 1 || !Array.isArray(data.places) || !Array.isArray(data.items) || !Array.isArray(data.stocks) || !Array.isArray(data.moves)) {
     throw new Error('The file format is not supported. Choose a Placeboard JSON export.');
   }
+  const places = data.places as unknown[];
+  const items = data.items as unknown[];
+  const stocks = data.stocks as unknown[];
+  const moves = data.moves as unknown[];
+  const record = (entry: unknown): entry is Record<string, unknown> => Boolean(entry) && typeof entry === 'object';
+  const text = (entry: Record<string, unknown>, key: string) => typeof entry[key] === 'string';
+  if (!places.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'createdAt') && (entry.parentId === null || typeof entry.parentId === 'string')) ||
+      !items.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'notes') && text(entry, 'createdAt') && text(entry, 'updatedAt')) ||
+      !stocks.every(entry => record(entry) && text(entry, 'itemId') && text(entry, 'placeId') && Number.isInteger(entry.quantity) && Number(entry.quantity) > 0) ||
+      !moves.every(entry => record(entry) && text(entry, 'id') && text(entry, 'itemId') && text(entry, 'note') && text(entry, 'at') && Number.isInteger(entry.quantity) && Number(entry.quantity) > 0 && (entry.fromPlaceId === null || typeof entry.fromPlaceId === 'string') && (entry.toPlaceId === null || typeof entry.toPlaceId === 'string'))) {
+    throw new Error('Some inventory records are incomplete. Choose an unedited Placeboard JSON export.');
+  }
+  const placeIds = new Set(data.places.map(place => place.id));
+  const itemIds = new Set(data.items.map(item => item.id));
+  if (placeIds.size !== data.places.length || itemIds.size !== data.items.length ||
+      data.places.some(place => place.parentId && !placeIds.has(place.parentId)) ||
+      data.stocks.some(stock => !placeIds.has(stock.placeId) || !itemIds.has(stock.itemId)) ||
+      data.moves.some(move => !itemIds.has(move.itemId) || (move.fromPlaceId && !placeIds.has(move.fromPlaceId)) || (move.toPlaceId && !placeIds.has(move.toPlaceId)))) {
+    throw new Error('Some inventory records point to missing places or items. Choose an unedited Placeboard JSON export.');
+  }
+  for (const place of data.places) {
+    const seen = new Set<string>();
+    let current: Place | undefined = place;
+    while (current) {
+      if (seen.has(current.id)) throw new Error('The place tree contains a loop. Choose an unedited Placeboard JSON export.');
+      seen.add(current.id);
+      current = current.parentId ? data.places.find(candidate => candidate.id === current?.parentId) : undefined;
+    }
+  }
   return clone(data as InventoryData);
 }
 
@@ -194,6 +223,7 @@ export function fromCsv(text: string): InventoryData {
     let parentId: string | null = null, builtPath = '';
     for (const rawPart of path.split('/')) {
       const part = rawPart.trim();
+      if (!part) throw new Error('Each place path must name every level. Remove empty path sections and try again.');
       builtPath = builtPath ? `${builtPath} / ${part}` : part;
       let placeId = placesByPath.get(builtPath);
       if (!placeId) {

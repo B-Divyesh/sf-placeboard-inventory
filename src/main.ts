@@ -9,12 +9,13 @@ let demoMode = false;
 let searchQuery = '';
 let notice = '';
 let noticeError = false;
+let updateAvailable = false;
 
 const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]!);
 
 async function navigate(path: string): Promise<void> {
   if (demoMode && !path.startsWith('/demo') && !path.includes('demo=1')) await discardDemo();
-  history.pushState({}, '', path);
+  history.pushState({ focusHeading: true }, '', path);
   await renderRoute();
 }
 
@@ -34,7 +35,7 @@ function header(path: string): string {
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="shell nav-wrap">
-        <a class="wordmark" href="/" data-link><span class="mark" aria-hidden="true"></span><span>Placeboard Inventory</span></a>
+        <a class="wordmark" href="/" data-link aria-label="Placeboard Inventory home"><span class="mark" aria-hidden="true"></span><span>Placeboard Inventory</span></a>
         <nav class="site-nav" aria-label="Main navigation">
           <a href="/inventory" data-link${current('/inventory')}>Inventory</a>
           <a href="/demo" data-link${current('/demo')}>Demo</a>
@@ -51,7 +52,7 @@ function footer(): string {
 function layout(path: string, content: string, demoBanner = false): void {
   document.title = routeTitle(path);
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `https://placeboard-inventory.sociobot.in${path === '/' ? '/' : path}`);
-  app.innerHTML = `${header(path)}${demoBanner ? `<div class="demo-banner" role="status">Demo — sample data, nothing is saved to your inventory <button type="button" data-action="reset-demo">Reset demo</button><button type="button" data-action="start-real">Start for real</button></div>` : ''}${content}${footer()}<div class="route-live" aria-live="polite" id="route-live"></div>`;
+  app.innerHTML = `${header(path)}${demoBanner ? `<div class="demo-banner" role="status">Demo — sample data, nothing is saved to your inventory <button type="button" data-action="reset-demo">Reset demo</button><button type="button" data-action="start-real">Start for real</button></div>` : ''}${notice ? `<div class="shell notice${noticeError ? ' error' : ''}${notice.startsWith('Moved ') ? ' move-ticket' : ''}" ${noticeError ? 'role="alert"' : 'role="status"'}>${escapeHtml(notice)}</div>` : ''}${content}${footer()}${updateAvailable ? '<div class="update-status" role="status">A new version is ready. <button type="button" data-action="reload">Reload Placeboard</button></div>' : ''}<div class="route-live" aria-live="polite" id="route-live"></div>`;
   bindCommon();
 }
 
@@ -74,7 +75,7 @@ function landing(): string {
         </ul>
       </div>
       <figure class="hero-art">
-        <img src="/assets/placeboard-market.webp" width="1200" height="800" alt="Household shelves linked by cyan, amber, and pink lights" fetchpriority="high" decoding="async">
+        <img src="/assets/placeboard-market.webp" srcset="/assets/placeboard-market-720.webp 720w, /assets/placeboard-market.webp 1200w" sizes="(max-width: 760px) 88vw, 55vw" width="1200" height="800" alt="Household shelves linked by cyan, amber, and pink lights" fetchpriority="high" decoding="async">
       </figure>
     </section>
 
@@ -174,7 +175,6 @@ function inventoryPage(source: InventoryData): string {
   const supporter = hasSupporterPack();
   return `<main id="main" class="shell workspace">
     <div class="workspace-head"><div><p class="eyebrow">${demoMode ? 'Sample household' : 'Your household'}</p><h1 tabindex="-1">Find an item in your home</h1></div><div class="toolbar"><button class="primary" type="button" data-action="open-item">Add item</button><button class="secondary" type="button" data-action="open-place">Add place</button><a class="button secondary" href="/print${demoMode ? '?demo=1' : ''}" data-link>Print labels</a></div></div>
-    ${notice ? `<div class="notice${noticeError ? ' error' : ''}" role="status">${escapeHtml(notice)}</div>` : ''}
     <div class="search-wrap"><label for="search">Search items and places</label><input id="search" type="search" value="${escapeHtml(searchQuery)}" autocomplete="off" placeholder="Try batteries or hall cupboard"><p id="result-count" class="next-note">${filteredItems(source).length} ${filteredItems(source).length === 1 ? 'item' : 'items'} shown</p></div>
     <div class="work-grid">
       <section class="panel" aria-labelledby="places-title"><div class="panel-head"><h2 id="places-title">Places</h2><span class="count">${source.places.length}</span></div>${source.places.length ? renderPlaceBranch(null, source) : '<div class="empty"><p>Your rooms, shelves, and bins will appear here.</p><button class="primary" type="button" data-action="open-place">Add first place</button></div>'}</section>
@@ -268,7 +268,13 @@ function bindInventory(): void {
   });
   document.querySelector<HTMLFormElement>('#move-form')?.addEventListener('submit', async event => {
     event.preventDefault(); const form = new FormData(event.currentTarget as HTMLFormElement); const itemId = String(form.get('itemId')); const from = String(form.get('fromPlaceId') ?? '') || null; const to = String(form.get('toPlaceId') ?? '') || null; const quantity = Number(form.get('quantity'));
-    try { data = moveStock(data!, itemId, from, to, quantity, String(form.get('note') ?? '')); const name = data.items.find(item => item.id === itemId)?.name ?? 'item'; await persist(`Recorded ${quantity} × ${name} moving to ${to ? placePath(to, data.places) : 'outside inventory'}.`); }
+    try {
+      data = moveStock(data!, itemId, from, to, quantity, String(form.get('note') ?? ''));
+      const name = data.items.find(item => item.id === itemId)?.name ?? 'item';
+      const source = from ? placePath(from, data.places) : 'outside inventory';
+      const destination = to ? placePath(to, data.places) : 'outside inventory';
+      await persist(`Moved ${quantity} × ${name} from ${source} to ${destination}.`);
+    }
     catch (error) { document.querySelector('#move-error')!.textContent = error instanceof Error ? error.message : 'The move could not be recorded.'; }
   });
   bindImport('import-json', async text => validateImport(JSON.parse(text)));
@@ -282,7 +288,7 @@ function bindImport(id: string, parse: (text: string) => Promise<InventoryData>)
       const imported = await parse(await file.text());
       if (!confirm(`Replace this inventory with ${imported.items.length} items and ${imported.places.length} places?`)) return;
       data = imported; await persist(`Imported ${imported.items.length} items and ${imported.places.length} places.`);
-    } catch (error) { notice = error instanceof Error ? error.message : 'The file could not be imported.'; noticeError = true; await renderRoute(); }
+    } catch (error) { notice = error instanceof SyntaxError ? 'This JSON file could not be read. Choose an unedited Placeboard JSON export.' : error instanceof Error ? error.message : 'The file could not be imported. Choose a Placeboard export and try again.'; noticeError = true; await renderRoute(); }
   });
 }
 
@@ -311,13 +317,21 @@ async function renderRoute(): Promise<void> {
 }
 
 const receivedLicense = captureLicense();
-if (receivedLicense) void verifyLicense(true);
 window.addEventListener('popstate', () => void renderRoute());
 const showOffline = () => { if (!document.querySelector('.offline-status')) document.body.insertAdjacentHTML('beforeend', '<div class="offline-status" role="status">Offline · changes still save here</div>'); };
 window.addEventListener('online', () => { document.querySelector('.offline-status')?.remove(); });
 window.addEventListener('offline', showOffline);
 if (!navigator.onLine) showOffline();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').then(registration => {
-  registration.addEventListener('updatefound', () => { const worker = registration.installing; worker?.addEventListener('statechange', () => { if (worker.state === 'installed' && navigator.serviceWorker.controller) { notice = 'An update is ready. Reload to use it.'; void renderRoute(); } }); });
+  registration.addEventListener('updatefound', () => { const worker = registration.installing; worker?.addEventListener('statechange', () => { if (worker.state === 'installed' && navigator.serviceWorker.controller) { updateAvailable = true; void renderRoute(); } }); });
 }).catch(() => { /* The app remains usable without installation support. */ });
-void renderRoute();
+void (async () => {
+  await renderRoute();
+  const previouslyActive = hasSupporterPack();
+  const result = await verifyLicense(receivedLicense);
+  if (receivedLicense || result.valid !== previouslyActive) {
+    notice = result.message;
+    noticeError = !result.valid;
+    await renderRoute();
+  }
+})();

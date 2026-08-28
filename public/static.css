@@ -1,0 +1,4 @@
+body { font: 18px/1.55 system-ui, sans-serif; background: #100f18; color: #f8f2dc; max-width: 38rem; margin: 15vh auto; padding: 24px; }
+h1 { color: #ffc857; text-transform: uppercase; line-height: 1; }
+a { color: #4de7dc; }
+a:focus-visible { outline: 3px solid #ffc857; outline-offset: 3px; }

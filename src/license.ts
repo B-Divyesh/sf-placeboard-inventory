@@ -26,8 +26,12 @@ export async function verifyLicense(force = false): Promise<{ valid: boolean; me
   if (!license) return { valid: false, message: 'Paste the license from your receipt.' };
   const cached = localStorage.getItem(VERDICT_KEY);
   if (!force && cached) {
-    const parsed = JSON.parse(cached) as Verdict;
-    if (Date.now() - parsed.checkedAt < 86_400_000) return { valid: parsed.valid, message: parsed.valid ? 'Supporter pack is active.' : 'This license is no longer active.' };
+    try {
+      const parsed = JSON.parse(cached) as Verdict;
+      if (Date.now() - parsed.checkedAt < 86_400_000) return { valid: parsed.valid, message: parsed.valid ? 'Supporter pack is active.' : 'This license is no longer active.' };
+    } catch {
+      localStorage.removeItem(VERDICT_KEY);
+    }
   }
   try {
     const response = await fetch(`${VERIFY_URL}?license=${encodeURIComponent(license)}`);

@@ -36,7 +36,7 @@ An 8 px base rhythm drives spacing. Controls are at least 44 px. Content caps at
 
 ## Motion policy
 
-One signature motion: when an item moves, a small ticket travels horizontally from the source sign to the destination sign over 240 ms, then fades. Other transitions use opacity or 2–4 px transforms for 150–220 ms. Nothing loops. Under `prefers-reduced-motion: reduce`, travel and transforms are removed and state changes are immediate.
+One signature motion: when an item moves, a small arrow ticket travels horizontally into the saved-move notice over 240 ms, then settles. Other transitions use opacity or 2–4 px transforms for 150–220 ms. Nothing loops. Under `prefers-reduced-motion: reduce`, travel and transforms are removed and state changes are immediate.
 
 ## Asset plan and provenance
 
