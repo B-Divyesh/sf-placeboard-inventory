@@ -1,0 +1,65 @@
+[
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after your first visit.",
+    "where": "landing facts, README",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "fresh Chromium context; open /demo, wait for the service worker, go offline, and reload"
+  },
+  {
+    "id": "demo-sandbox",
+    "claim": "The demo uses sample data and never changes the real inventory.",
+    "where": "landing action, demo banner, README",
+    "test": "npm test -- --grep @claim:demo-sandbox",
+    "sandbox": "fresh Chromium context; edit demo data, leave, then assert a clean real inventory"
+  },
+  {
+    "id": "local-data",
+    "claim": "Inventory data stays on this device.",
+    "where": "landing facts, privacy, README",
+    "test": "npm test -- --grep @claim:local-data",
+    "sandbox": "fresh Chromium context; intercept all demo requests and assert every request is same-origin"
+  },
+  {
+    "id": "multi-location-move",
+    "claim": "One item can have quantities in several places, and moves update both counts.",
+    "where": "live preview, how it works, README",
+    "test": "npm test -- --grep @claim:multi-location-move",
+    "sandbox": "fresh /demo; move two batteries and assert both place quantities plus history"
+  },
+  {
+    "id": "csv-export",
+    "claim": "Exports current item quantities and place paths as CSV.",
+    "where": "data tools, landing privacy section, README",
+    "test": "npm test -- --grep @claim:csv-export",
+    "sandbox": "fresh /demo; download CSV and assert the header and sample rows"
+  },
+  {
+    "id": "json-export",
+    "claim": "Exports the full inventory and move history as JSON.",
+    "where": "data tools, landing privacy section, README",
+    "test": "npm test -- --grep @claim:json-export",
+    "sandbox": "fresh /demo; download JSON and assert places, items, stocks, and moves"
+  },
+  {
+    "id": "print-labels",
+    "claim": "Prints a label for every place or one chosen place.",
+    "where": "inventory toolbar and place tree, README",
+    "test": "npm test -- --grep @claim:print-labels",
+    "sandbox": "fresh /demo; open all labels and one selected label and assert their contents"
+  },
+  {
+    "id": "supporter-price",
+    "claim": "The supporter pack costs $14 once and links to Sociobot checkout.",
+    "where": "landing facts, supporter section, terms, README",
+    "test": "npm test -- --grep @claim:supporter-price",
+    "sandbox": "fresh landing page; assert price copy and the exact checkout URL without opening checkout"
+  },
+  {
+    "id": "supporter-features",
+    "claim": "The supporter pack adds three print styles and a 30-day move summary.",
+    "where": "supporter section, print screen, inventory move history, README",
+    "test": "npm test -- --grep @claim:supporter-features",
+    "sandbox": "fresh browser context with a cached valid verdict; assert three extra styles, style selection, and summary"
+  }
+]
