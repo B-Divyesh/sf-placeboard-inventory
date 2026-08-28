@@ -22,7 +22,7 @@ Audited 2026-08-28. Counts treat hyphenated terms as one word.
 | Name your places | 3 | Pass |
 | Add a home, room, shelf, or bin. | 7 | Pass |
 | Nest bins and shelves inside rooms. | 6 | Pass |
-| Put items there | 3 | Pass |
+| Add items to places | 4 | Pass |
 | Add a quantity to one place. | 6 | Pass |
 | Add the same item to another place later. | 8 | Pass |
 | Record each move | 3 | Pass |
@@ -35,12 +35,12 @@ Audited 2026-08-28. Counts treat hyphenated terms as one word.
 | Your inventory uses browser storage. | 5 | Pass |
 | Export JSON or CSV whenever you want a backup. | 9 | Pass |
 | What Placeboard does not do | 5 | Pass |
-| There is no cloud sync, product database, insurance valuation, or photo upload. | 12 | Pass |
+| It does not value items or run a warehouse. | 9 | Pass: scope disclaimer |
 | Find shared household items by place. | 6 | Pass |
 | Original generated imagery. | 3 | Pass |
 | Built by Param Factory | 4 | Pass |
 
-No string exceeds 22 words or uses a banned marketing word. The headline has eight words and names the job. The 16-word supporting sentence names the household situation. The primary action, its result, and three facts fit in the first 390×844 screen.
+No string exceeds 22 words or uses a banned marketing word. The headline has eight words and names the job. The 16-word supporting sentence names the household situation. The primary action, its result, and three facts fit in the first 390×844 and 1440×900 screens.
 
 ## Terminology
 

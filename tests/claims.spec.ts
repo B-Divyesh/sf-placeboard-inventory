@@ -26,6 +26,17 @@ test('@claim:demo-sandbox keeps demo changes away from real data', async ({ page
   await expect(page.getByText('Your rooms, shelves, and bins will appear here.')).toBeVisible();
 });
 
+test('@claim:sample-data provides the documented places, items, and moves', async ({ page }) => {
+  await page.goto('/demo');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export JSON' }).click();
+  const download = await downloadPromise;
+  const value = JSON.parse(await (await import('node:fs/promises')).readFile(await download.path() as string, 'utf8'));
+  expect(value.places).toHaveLength(7);
+  expect(value.items).toHaveLength(5);
+  expect(value.moves).toHaveLength(3);
+});
+
 test('@claim:local-data sends no inventory data off origin', async ({ page }) => {
   const crossOrigin: string[] = [];
   page.on('request', request => {
@@ -209,6 +220,17 @@ test('mobile first screen includes the action result and all three facts', async
     await expect(target).toBeVisible();
     const box = await target.boundingBox();
     expect(box!.y + box!.height).toBeLessThanOrEqual(844);
+  }
+});
+
+test('desktop first screen includes the first action, its result, and all facts', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  for (const text of ['Try it with sample data', 'Opens a stocked sample. Your inventory is unchanged.', 'Works offline after your first visit.', 'Inventory data stays on this device.', 'All inventory tools are free.']) {
+    const target = page.getByText(text, { exact: true });
+    await expect(target).toBeVisible();
+    const box = await target.boundingBox();
+    expect(box!.y + box!.height).toBeLessThanOrEqual(900);
   }
 });
 

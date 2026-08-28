@@ -12,6 +12,8 @@ export default defineConfig({
   webServer: {
     command: 'npm run preview -- --host 127.0.0.1',
     url: 'http://127.0.0.1:4173',
-    reuseExistingServer: true,
+    // Each run must exercise the build produced by this command, not a
+    // developer preview that happens to be holding the port.
+    reuseExistingServer: false,
   },
 });

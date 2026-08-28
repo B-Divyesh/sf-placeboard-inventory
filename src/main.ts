@@ -107,14 +107,14 @@ function landing(): string {
       <div class="section-head"><h2 id="how-title">How to track an item</h2><p>Build the same simple map you use when you tell someone where to look.</p></div>
       <div class="steps">
         <article class="step"><h3>Name your places</h3><p>Add a home, room, shelf, or bin. Nest bins and shelves inside rooms.</p></article>
-        <article class="step"><h3>Put items there</h3><p>Add a quantity to one place. Add the same item to another place later.</p></article>
+        <article class="step"><h3>Add items to places</h3><p>Add a quantity to one place. Add the same item to another place later.</p></article>
         <article class="step"><h3>Record each move</h3><p>Choose the old place and new place. Placeboard updates both counts and keeps the history.</p></article>
       </div>
     </div></section>
 
     <section class="section" aria-labelledby="limits-title"><div class="shell">
       <div class="section-head"><h2 id="limits-title">Made for finding, not valuing</h2><p>This household inventory stays in this browser. It does not value items or run a warehouse.</p></div>
-      <div class="boundary"><div><h3>Keep and export your inventory</h3><p>Your inventory uses browser storage. Export JSON or CSV whenever you want a backup.</p></div><div><h3>What Placeboard does not do</h3><p>There is no cloud sync, product database, insurance valuation, or photo upload.</p></div></div>
+      <div class="boundary"><div><h3>Keep and export your inventory</h3><p>Your inventory uses browser storage. Export JSON or CSV whenever you want a backup.</p></div><div><h3>What Placeboard does not do</h3><p>It does not value items or run a warehouse.</p></div></div>
     </div></section>
   </main>`;
 }
