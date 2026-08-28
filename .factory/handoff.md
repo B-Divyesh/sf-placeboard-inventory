@@ -1,5 +1,17 @@
 # Placeboard Inventory v1.0.1 repair handoff
 
+## Independent verification 2 — PASS
+
+Candidate `04630d7a6e6edb830f2111ad208a85d278cb41da` was independently
+verified against https://placeboard-inventory.sociobot.in on 2026-08-28 UTC.
+**PASS:** all 13 exact claim commands, `npm run test:unit` (4 tests), `npm test`
+(20 tests), and `npm run build` passed from a clean checkout. The live site
+serves byte-identical candidate JS/CSS, passes controlled offline reload, has
+zero serious/critical Axe findings across its main routes, and enforces
+license-verify rate limiting (429 with `Retry-After` under a burst). Full
+evidence, route/header checks, mobile/keyboard results, and the single
+development-only audit maintenance note are in `.factory/verification-2.md`.
+
 This repair resolves every release blocker in independent verification report
 `.factory/verification-1.md` for candidate
 `d5f577931e2a4ea9a7292e177335d02932f53b36`. It preserves the offline,
