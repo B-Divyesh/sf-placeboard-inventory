@@ -1,90 +1,41 @@
-# Placeboard Inventory v1.0.1 repair handoff
+# Adversarial review 1 handoff
 
-## Independent verification 2 — PASS
+## Outcome
 
-Candidate `04630d7a6e6edb830f2111ad208a85d278cb41da` was independently
-verified against https://placeboard-inventory.sociobot.in on 2026-08-28 UTC.
-**PASS:** all 13 exact claim commands, `npm run test:unit` (4 tests), `npm test`
-(20 tests), and `npm run build` passed from a clean checkout. The live site
-serves byte-identical candidate JS/CSS, passes controlled offline reload, has
-zero serious/critical Axe findings across its main routes, and enforces
-license-verify rate limiting (429 with `Retry-After` under a burst). Full
-evidence, route/header checks, mobile/keyboard results, and the single
-development-only audit maintenance note are in `.factory/verification-2.md`.
+Review 1 is complete with verdict **FAIL**. The full evidence and 22 findings
+are in `.factory/review-1.md`. No product code was modified.
 
-This repair resolves every release blocker in independent verification report
-`.factory/verification-1.md` for candidate
-`d5f577931e2a4ea9a7292e177335d02932f53b36`. It preserves the offline,
-local-first household inventory artifact and its static PWA deployment class.
+The release blockers are:
 
-## Repaired findings
+1. The live **Buy supporter pack** endpoint returns HTTP 404, while its claim
+   test passes by checking only the `href`.
+2. Unknown application routes return HTTP 200 soft-404 pages, and the true
+   static 404 does not use the standard header/footer skeleton.
 
-- **Unit quality gate:** `npm run test:unit` now runs only `tests/**/*.unit.ts`
-  through `vitest.config.ts`. The formerly miscollected Playwright data tests
-  are real Vitest tests. The unit suite also asserts the deployed cache policy.
-- **Static cache policy:** `public/staticwebapp.config.json` now sets
-  `Cache-Control: public, max-age=31536000, immutable` for `/assets/*` and
-  leaves HTML globally revalidated. `sw.js` is explicitly `no-cache, no-store,
-  must-revalidate` so updates can be discovered.
-- **390 px targets:** the wordmark has a 44×44 px minimum hit area and nav
-  links have horizontal hit-area padding. A Playwright viewport test measures
-  both the wordmark and Demo link at 390 px.
-- **Free-core claim:** `.factory/claims.json` now maps “The complete inventory
-  stays free” to `@claim:free-core`. In a fresh no-license browser context the
-  test creates a place and item, then exports JSON.
+The review also records unlisted billing/privacy/depth claims, first-screen
+content below the fold, three undersized mobile links, a missing record
+correction/archive workflow, and plain-words issues with exact rewrites.
 
-## Run and verify
+## How it was verified
 
-```sh
-npm ci
-npm run test:unit
-npm test
-npm run build
-```
+- Opened the live landing page cold in fresh 390×844 and 1440×900 Chromium
+  contexts before scrolling.
+- Entered the live demo in one click; verified realistic sample data, banner,
+  reset, real/demo storage separation, exit cleanup, offline reload, and zero
+  cross-origin requests in the normal demo journey.
+- Ran all 13 commands from `.factory/claims.json` separately after `npm ci`.
+- Ran `npm run test:unit` (4 passed), `npm test` (20 passed), and
+  `npm run build` (passed).
+- Crawled live routes and links, checked response statuses/headers, metadata,
+  history focus/scroll restoration, 390 px target sizes, and every prior
+  handoff/verification finding.
+- Ran `/opt/fleet/lib/verify-url.sh` against live `/demo` and Playwright Axe on
+  seven live routes; Axe returned zero violations.
+- Confirmed deployed JS/CSS hashes match the local production build.
 
-Deploy with `npm run build`; `dist/index.html` is the static entry point.
+## Work left
 
-Verification completed on 2026-08-28:
-
-- `npm ci`: passed. `npm audit --omit=dev --json`: 0 production
-  vulnerabilities.
-- `npm run test:unit`: passed, 4 tests in 2 files. It includes the exact
-  static caching-policy regression assertion.
-- `npm test`: passed uninterrupted, 20 Chromium tests. This includes all 13
-  tagged public claims, offline controlled reload, separate demo storage,
-  privacy request interception, import/export, desktop, 390 px mobile,
-  keyboard, route-focus, invalid-move recovery, and license-return flows.
-- `npm run build`: passed with TypeScript no-emit checking. Output: 11.27 KB
-  gzip JavaScript and 3.87 KB gzip CSS; `dist/` contains its root `index.html`.
-  No separate linter is configured in this intentionally small TypeScript
-  project; the build type check is the available static-analysis gate.
-- Playwright Axe found zero serious or critical violations on `/`, `/demo`, and
-  `/privacy`. The same suite verifies reduced-motion-compatible UI and 44 px
-  mobile header targets. `verify-url.sh` against local `/demo` returned HTTP
-  200, one title/lang/main/h1, no missing image alt text or unlabeled buttons,
-  and no console errors. Evidence: `.factory/evidence-repair/verify.json` and
-  the desktop/mobile screenshots beside it.
-- The `@claim:offline-reload` browser test visited controlled `/demo`, disabled
-  networking, reloaded, retained sample data, and showed the offline status.
-  Service worker/update source behavior remains unchanged; cache routing is now
-  covered by the deployment-policy unit test.
-- The build contains only same-origin assets plus the explicit Sociobot billing
-  endpoint in `connect-src`; normal inventory flows make no third-party request.
-- **Production deployment:** deployed with `/opt/fleet/lib/deploy-static.sh
-  placeboard-inventory dist` to `https://placeboard-inventory.sociobot.in`.
-  The live document references `assets/index-DU6DI1jj.js`; its SHA-256 is
-  `95dd60b061935f0d478ad200520d95065e6b9c0d5e4de467ac7d30b28aa455e8`,
-  exactly matching `dist`. Live JS and CSS return `public, max-age=31536000,
-  immutable`; `sw.js` returns `no-cache, no-store, must-revalidate`. Live
-  `/demo` passed `verify-url.sh` (HTTP 200, no console errors, title/lang/main/
-  h1/alt/button checks) and all documented app, legal, PWA, manifest, robots,
-  and sitemap routes returned HTTP 200. Evidence is in
-  `.factory/evidence-live-repair/`.
-
-## Known limits
-
-- There is no cloud sync, shared account, photos, barcode database, valuation,
-  or insurance reporting. Browser storage can be cleared, so export JSON before
-  clearing site data or moving devices.
-- The supporter product must be registered by the factory before live checkout
-  can sell licenses. No billing secret or payment-provider code is present.
+Address F-1-1 through F-1-22 in `.factory/review-1.md`, then repeat the entire
+review from a fresh browser context. In particular, do not restore the paid CTA
+until the Sociobot checkout responds successfully and the tagged test verifies
+that outcome.
