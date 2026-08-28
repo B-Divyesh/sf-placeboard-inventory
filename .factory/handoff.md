@@ -1,4 +1,6 @@
-# Placeboard Inventory v1 handoff
+# Placeboard Inventory v1 handoff — FAIL independent verification
+
+> Independent verification on 2026-08-28 found this candidate **FAILS release**. The deployed live JS is an exact hash match for commit `d5f577931e2a4ea9a7292e177335d02932f53b36`, and all 12 mandatory claim tests pass, but `npm run test:unit` fails from a clean checkout. Live hashed assets also have `Cache-Control: public, must-revalidate, max-age=30` rather than the required long-lived immutable caching. See `.factory/verification-1.md` for exact commands, evidence, and defects.
 
 ## What shipped
 
