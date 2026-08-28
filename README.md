@@ -6,46 +6,46 @@ Placeboard is for households that use cupboards, shelves, bins, sheds, cars, or 
 
 Live site: <https://placeboard-inventory.sociobot.in>
 
-## Try the isolated demo
+## Try sample data without changing your inventory
 
-Open `/demo`, or visit <https://placeboard-inventory.sociobot.in/demo>. The demo includes seven places, five items, and three moves. It uses the separate `placeboard-demo-v1` IndexedDB database. Leaving the demo deletes its changes and never changes the real inventory.
+Open `/?demo=1` or `/demo`, or visit <https://placeboard-inventory.sociobot.in/?demo=1>. The demo includes seven places, five items, and three moves. It uses a separate browser database. Leaving the demo deletes its changes and never changes the real inventory.
 
 The sample is bundled with the app. The demo works offline after the first visit.
 
-## What v1 does
+Technical note: demo data uses `placeboard-demo-v1`; real data uses `placeboard-real-v1`.
+
+## What Placeboard Inventory does
 
 - Builds a nested place tree for homes, rooms, shelves, and bins.
 - Keeps one item in several places with a quantity at each place.
-- Moves stock between places or in and out of the inventory.
+- Records item quantities moving between places or in and out of the inventory.
+- Lets you edit or archive items and places while keeping move history.
+- Requires a destination before archiving an occupied place and offers undo.
 - Searches item names, notes, and full place paths.
 - Keeps dated move history.
 - Prints all place labels or one chosen label.
 - Exports full data and move history as JSON.
 - Exports current quantities and place paths as CSV.
 - Imports Placeboard JSON and CSV files.
-- Stores inventory in IndexedDB on this device.
+- Stores inventory in this browser.
 
-This is not an insurance record, valuation tool, barcode catalog, or warehouse system.
-
-## Supporter pack
-
-The complete inventory remains free. A $14 one-time supporter pack adds three label styles and a 30-day move summary. Checkout and license verification use the Sociobot billing API. No product ID or payment-provider code is embedded here.
+All inventory tools are free. Placeboard is not an insurance record, valuation tool, barcode catalog, or warehouse system.
 
 ## Develop and verify
 
 Requirements: Node.js 22 and npm.
 
 ```sh
-npm install
+npm ci
 npm run dev
 npm run test:unit
 npm test
 npm run build
 ```
 
-`npm run test:unit` runs the isolated Vitest data and deployment-policy tests. `npm test` builds the production app and runs the Playwright claim, accessibility, mobile, and keyboard tests. The exact deploy command is `npm run build`. It writes the static site to `dist/`, with `dist/index.html` at its root.
+`npm run test:unit` runs the Vitest data and deployment-policy tests. `npm test` builds the production app and runs Playwright claim, accessibility, mobile, privacy, offline, routing, and keyboard tests. `npm run build` writes the static site to `dist/`, with `dist/index.html` at its root.
 
-To run only one public claim:
+To run one public claim:
 
 ```sh
 npm test -- --grep @claim:offline-reload
@@ -55,11 +55,11 @@ The Playwright version is pinned to `1.58.2`. Set `PLAYWRIGHT_BROWSERS_PATH` to 
 
 ## Privacy and data ownership
 
-Normal inventory use makes no third-party request. Data stays in local browser storage unless the user exports it. License verification sends only the entered license token to `api.sociobot.in`. See `/privacy` and `/terms` in the app.
+Inventory use makes no third-party request. Data stays in local browser storage unless you export it. See `/privacy` and `/terms` in the app.
 
 ## Deployment
 
-Deploy the contents of `dist/` as a static site. `staticwebapp.config.json` provides SPA fallback, security headers, the styled 404 response, immutable caching for versioned `/assets/*`, and revalidation for HTML and `sw.js`. The factory owns DNS, infrastructure, and billing setup.
+Deploy the contents of `dist/` as a static site. `staticwebapp.config.json` enumerates application routes, returns the styled 404 for unknown paths, sets security headers, caches hashed assets, and revalidates HTML and `sw.js`. The factory owns DNS and infrastructure.
 
 ## License
 

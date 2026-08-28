@@ -1,0 +1,1 @@
+Find shared household items by place and record every move.

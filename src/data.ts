@@ -118,6 +118,74 @@ export function addItem(data: InventoryData, name: string, notes: string, placeI
   return { ...data, items: [...data.items, item], stocks: [...data.stocks, stock], moves: [move, ...data.moves] };
 }
 
+export function editItem(data: InventoryData, itemId: string, name: string, notes: string): InventoryData {
+  const cleanName = name.trim();
+  if (!cleanName) throw new Error('Enter a name for this item.');
+  const now = new Date().toISOString();
+  return {
+    ...data,
+    items: data.items.map(item => item.id === itemId ? { ...item, name: cleanName, notes: notes.trim(), updatedAt: now } : item)
+  };
+}
+
+export function editPlace(data: InventoryData, placeId: string, name: string, parentId: string | null): InventoryData {
+  const cleanName = name.trim();
+  if (!cleanName) throw new Error('Enter a name for this place.');
+  if (parentId === placeId) throw new Error('A place cannot be inside itself.');
+  let current = parentId ? data.places.find(place => place.id === parentId) : undefined;
+  const seen = new Set([placeId]);
+  while (current) {
+    if (seen.has(current.id)) throw new Error('Choose a place outside this branch.');
+    seen.add(current.id);
+    current = current.parentId ? data.places.find(place => place.id === current?.parentId) : undefined;
+  }
+  return {
+    ...data,
+    places: data.places.map(place => place.id === placeId ? { ...place, name: cleanName, parentId: parentId || null } : place)
+  };
+}
+
+export function archiveItem(data: InventoryData, itemId: string): InventoryData {
+  const now = new Date().toISOString();
+  const item = data.items.find(candidate => candidate.id === itemId);
+  const archiveMoves = data.stocks.filter(stock => stock.itemId === itemId).map(stock => ({
+    id: uid('move'), itemId, fromPlaceId: stock.placeId, toPlaceId: null, quantity: stock.quantity,
+    note: `Archived ${item?.name ?? 'item'}`, at: now
+  }));
+  return {
+    ...data,
+    items: data.items.map(item => item.id === itemId ? { ...item, archivedAt: now, updatedAt: now } : item),
+    stocks: data.stocks.filter(stock => stock.itemId !== itemId),
+    moves: [...archiveMoves, ...data.moves]
+  };
+}
+
+export function archivePlace(data: InventoryData, placeId: string, destinationId: string | null): InventoryData {
+  const place = data.places.find(candidate => candidate.id === placeId);
+  if (!place) throw new Error('This place could not be found.');
+  if (data.places.some(candidate => !candidate.archivedAt && candidate.parentId === placeId)) {
+    throw new Error('Archive the places inside this place first.');
+  }
+  const occupied = data.stocks.filter(stock => stock.placeId === placeId);
+  if (occupied.length && !destinationId) throw new Error('Choose where to move the items before archiving this place.');
+  if (destinationId === placeId) throw new Error('Choose a different destination.');
+  const stocks = data.stocks.map(stock => ({ ...stock }));
+  const moves = [...data.moves];
+  const now = new Date().toISOString();
+  for (const source of occupied) {
+    const target = stocks.find(stock => stock.itemId === source.itemId && stock.placeId === destinationId);
+    if (target) target.quantity += source.quantity;
+    else stocks.push({ itemId: source.itemId, placeId: destinationId!, quantity: source.quantity });
+    moves.unshift({ id: uid('move'), itemId: source.itemId, fromPlaceId: placeId, toPlaceId: destinationId, quantity: source.quantity, note: `Moved before archiving ${place.name}`, at: now });
+  }
+  return {
+    ...data,
+    places: data.places.map(candidate => candidate.id === placeId ? { ...candidate, archivedAt: now } : candidate),
+    stocks: stocks.filter(stock => stock.placeId !== placeId),
+    moves
+  };
+}
+
 export function moveStock(data: InventoryData, itemId: string, fromPlaceId: string | null, toPlaceId: string | null, quantity: number, note: string): InventoryData {
   if (!toPlaceId && !fromPlaceId) throw new Error('Choose where the item came from or where it is going.');
   if (fromPlaceId === toPlaceId) throw new Error('Choose two different places.');
@@ -155,8 +223,8 @@ export function validateImport(value: unknown): InventoryData {
   const moves = data.moves as unknown[];
   const record = (entry: unknown): entry is Record<string, unknown> => Boolean(entry) && typeof entry === 'object';
   const text = (entry: Record<string, unknown>, key: string) => typeof entry[key] === 'string';
-  if (!places.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'createdAt') && (entry.parentId === null || typeof entry.parentId === 'string')) ||
-      !items.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'notes') && text(entry, 'createdAt') && text(entry, 'updatedAt')) ||
+  if (!places.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'createdAt') && (entry.parentId === null || typeof entry.parentId === 'string') && (entry.archivedAt === undefined || typeof entry.archivedAt === 'string')) ||
+      !items.every(entry => record(entry) && text(entry, 'id') && text(entry, 'name') && text(entry, 'notes') && text(entry, 'createdAt') && text(entry, 'updatedAt') && (entry.archivedAt === undefined || typeof entry.archivedAt === 'string')) ||
       !stocks.every(entry => record(entry) && text(entry, 'itemId') && text(entry, 'placeId') && Number.isInteger(entry.quantity) && Number(entry.quantity) > 0) ||
       !moves.every(entry => record(entry) && text(entry, 'id') && text(entry, 'itemId') && text(entry, 'note') && text(entry, 'at') && Number.isInteger(entry.quantity) && Number(entry.quantity) > 0 && (entry.fromPlaceId === null || typeof entry.fromPlaceId === 'string') && (entry.toPlaceId === null || typeof entry.toPlaceId === 'string'))) {
     throw new Error('Some inventory records are incomplete. Choose an unedited Placeboard JSON export.');

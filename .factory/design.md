@@ -29,7 +29,7 @@ An 8 px base rhythm drives spacing. Controls are at least 44 px. Content caps at
 
 ## Interaction grammar
 
-- Cyan means “choose or create a place.” Amber marks countable stock. Pink is reserved for a move between places.
+- Cyan means “choose or create a place.” Amber marks item quantities. Pink is reserved for a move between places.
 - Pressed controls shift 2 px toward their hard shadow.
 - Search results arrive as hanging signs. Expanding a place reveals its children from the parent rail.
 - Feedback names both the action and the object: “Moved 2 batteries to Hall cupboard.” Destructive actions confirm the exact target.

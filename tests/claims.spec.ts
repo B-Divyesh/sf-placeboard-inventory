@@ -13,9 +13,11 @@ test('@claim:offline-reload works offline after the first visit', async ({ page,
 });
 
 test('@claim:demo-sandbox keeps demo changes away from real data', async ({ page }) => {
-  await page.goto('/demo');
+  await page.goto('/?demo=1');
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByText('Demo — sample data, nothing is saved to your inventory')).toBeVisible();
   await page.getByRole('button', { name: 'Add place' }).click();
-  await page.getByLabel('Place name').fill('Attic trunk');
+  await page.locator('#place-dialog').getByLabel('Place name').fill('Attic trunk');
   await page.getByRole('button', { name: 'Save place' }).click();
   await expect(page.getByRole('link', { name: 'Attic trunk 0 items here' })).toBeVisible();
   await page.getByRole('button', { name: 'Start for real' }).click();
@@ -38,18 +40,22 @@ test('@claim:local-data sends no inventory data off origin', async ({ page }) =>
   expect(crossOrigin).toEqual([]);
 });
 
-test('@claim:free-core keeps the complete inventory available without a supporter verdict', async ({ page }) => {
+test('@claim:free-core keeps all inventory tools available without a license', async ({ page }) => {
   await page.goto('/inventory');
-  await page.evaluate(() => localStorage.removeItem('sb_license_verdict:placeboard-inventory'));
-  await page.reload();
-  await expect(page.getByText('Supporter summary:')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Add place' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add item' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Print labels' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible();
+  await expect(page.getByText('Import JSON')).toBeVisible();
+  await expect(page.getByText('Import CSV')).toBeVisible();
   await page.getByRole('button', { name: 'Add place' }).click();
-  await page.getByLabel('Place name').fill('Free shelf');
+  await page.locator('#place-dialog').getByLabel('Place name').fill('Free shelf');
   await page.getByRole('button', { name: 'Save place' }).click();
   await page.getByRole('button', { name: 'Add item' }).click();
-  await page.getByLabel('Item name').fill('Spare bulbs');
-  await page.getByLabel('Starting place').selectOption({ label: 'Free shelf' });
-  await page.getByLabel('Quantity').first().fill('3');
+  await page.locator('#item-dialog').getByLabel('Item name').fill('Spare bulbs');
+  await page.locator('#item-dialog').getByLabel('Starting place').selectOption({ label: 'Free shelf' });
+  await page.locator('#item-dialog').getByLabel('Quantity').fill('3');
   await page.getByRole('button', { name: 'Save item' }).click();
   await expect(page.getByRole('heading', { name: 'Spare bulbs' })).toBeVisible();
   const downloadPromise = page.waitForEvent('download');
@@ -59,7 +65,7 @@ test('@claim:free-core keeps the complete inventory available without a supporte
 
 test('@claim:multi-location-move updates both places and history', async ({ page }) => {
   await page.goto('/demo');
-  await page.getByLabel('Search items and places').fill('AA batteries');
+  await page.getByLabel('Search items and places').fill('batteries');
   await expect(page.getByText('8 at Home / Hall cupboard · 4 at Home / Garage / Red tool bin')).toBeVisible();
   await page.getByRole('button', { name: 'Move or add' }).click();
   await expect(page.getByLabel('From')).toHaveValue('hall');
@@ -67,7 +73,7 @@ test('@claim:multi-location-move updates both places and history', async ({ page
   await page.getByLabel('Quantity').last().fill('2');
   await page.getByRole('textbox', { name: 'Note', exact: true }).fill('Restocked workbench');
   await page.getByRole('button', { name: 'Record move' }).click();
-  await page.getByLabel('Search items and places').fill('AA batteries');
+  await page.getByLabel('Search items and places').fill('batteries');
   await expect(page.getByText('6 at Home / Hall cupboard · 6 at Home / Garage / Red tool bin')).toBeVisible();
   await expect(page.getByText(/2 × AA batteries/).first()).toBeVisible();
   await expect(page.getByText(/Restocked workbench/)).toBeVisible();
@@ -79,6 +85,40 @@ test('@claim:multi-location-move updates both places and history', async ({ page
   await page.getByRole('button', { name: 'Record move' }).click();
   await expect(page.getByText(/1 at Home \/ Kitchen \/ Pantry shelf/)).toBeVisible();
   await expect(page.getByText('13 total')).toBeVisible();
+});
+
+test('@claim:record-correction edits and archives records with destination, history, and undo', async ({ page }) => {
+  page.on('dialog', dialog => dialog.accept());
+  await page.goto('/demo');
+  await page.getByLabel('Search items and places').fill('batteries');
+  await page.locator('[data-item="batteries"][data-action="edit-item"]').click();
+  await page.getByLabel('Item name').last().fill('Rechargeable batteries');
+  await page.getByLabel('Notes').last().fill('AA rechargeable set');
+  await page.getByRole('button', { name: 'Save item' }).last().click();
+  await expect(page.getByRole('heading', { name: 'Rechargeable batteries' })).toBeVisible();
+
+  await page.locator('[data-place="hall"]').click();
+  await page.getByLabel('Place name').last().fill('Entry cupboard');
+  await page.getByRole('button', { name: 'Save place' }).last().click();
+  await expect(page.getByRole('link', { name: /Entry cupboard/ })).toBeVisible();
+
+  await page.locator('[data-place="hall"]').click();
+  await page.getByLabel('Move items here before archiving').selectOption('red-bin');
+  await page.getByRole('button', { name: 'Archive place' }).click();
+  await expect(page.getByText('Archived Entry cupboard.')).toBeVisible();
+  await expect(page.getByRole('link', { name: /Entry cupboard/ })).toHaveCount(0);
+  await expect(page.getByText(/Moved before archiving Entry cupboard/).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Undo archive of Entry cupboard' }).click();
+  await expect(page.getByRole('link', { name: /Entry cupboard/ })).toBeVisible();
+  await expect(page.getByText(/For the smoke alarm/)).toBeVisible();
+  await page.locator('[data-item="batteries"][data-action="edit-item"]').click();
+  await page.getByRole('button', { name: 'Archive item' }).click();
+  await expect(page.getByText('Archived Rechargeable batteries.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Rechargeable batteries' })).toHaveCount(0);
+  await expect(page.locator('.move-list').getByText(/Archived Rechargeable batteries/).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Undo archive of Rechargeable batteries' }).click();
+  await expect(page.getByRole('heading', { name: 'Rechargeable batteries' })).toBeVisible();
+  await expect(page.getByText(/For the smoke alarm/)).toBeVisible();
 });
 
 test('@claim:place-tree shows nested physical places', async ({ page }) => {
@@ -144,25 +184,8 @@ test('@claim:print-labels prints all or one chosen place', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Hall cupboard', level: 2 })).toBeVisible();
 });
 
-test('@claim:supporter-price shows one-time price and Sociobot checkout', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.getByText('$14 once')).toBeVisible();
-  await expect(page.getByRole('link', { name: /Buy supporter pack/ })).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/placeboard-inventory/checkout');
-});
-
-test('@claim:supporter-features adds print styles and a move summary', async ({ page }) => {
-  await page.goto('/');
-  await page.evaluate(() => localStorage.setItem('sb_license_verdict:placeboard-inventory', JSON.stringify({ valid: true, checkedAt: Date.now() })));
-  await page.goto('/demo');
-  await expect(page.getByText(/Supporter summary: 3 moves/)).toBeVisible();
-  await page.getByRole('link', { name: 'Print labels' }).click();
-  await expect(page.getByRole('group', { name: 'Label style' }).getByRole('button')).toHaveCount(4);
-  await page.getByRole('button', { name: 'Neon route' }).click();
-  await expect(page.locator('.print-label').first()).toHaveAttribute('data-style', 'neon');
-});
-
-test('landing and demo have no serious accessibility findings', async ({ page }) => {
-  for (const path of ['/', '/demo', '/privacy']) {
+test('every application route has no serious accessibility findings', async ({ page }) => {
+  for (const path of ['/', '/demo', '/inventory', '/privacy', '/terms', '/print?demo=1', '/404.html']) {
     await page.goto(path);
     const result = await new AxeBuilder({ page: page as never }).analyze();
     expect(result.violations.filter(item => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
@@ -178,14 +201,30 @@ test('mobile inventory keeps actions visible', async ({ page }) => {
   await expect(page.locator('body')).toHaveJSProperty('scrollWidth', 390);
 });
 
-test('mobile header controls meet the 44 pixel touch-target minimum', async ({ page }) => {
+test('mobile first screen includes the action result and all three facts', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  for (const control of [page.getByRole('link', { name: 'Placeboard Inventory' }), page.getByRole('link', { name: 'Demo' })]) {
-    const box = await control.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.width).toBeGreaterThanOrEqual(44);
-    expect(box!.height).toBeGreaterThanOrEqual(44);
+  for (const text of ['Try it with sample data', 'Opens a stocked sample. Your inventory is unchanged.', 'Works offline after your first visit.', 'Inventory data stays on this device.', 'All inventory tools are free.']) {
+    const target = page.getByText(text, { exact: true });
+    await expect(target).toBeVisible();
+    const box = await target.boundingBox();
+    expect(box!.y + box!.height).toBeLessThanOrEqual(844);
+  }
+});
+
+test('all visible mobile controls meet the 44 pixel touch-target minimum', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of ['/', '/demo', '/privacy', '/terms', '/print?demo=1', '/404.html']) {
+    await page.goto(path);
+    const controls = page.locator('a, button, input:not([type="file"]), select, textarea, label.button');
+    for (let index = 0; index < await controls.count(); index += 1) {
+      const control = controls.nth(index);
+      if (!(await control.isVisible())) continue;
+      const box = await control.boundingBox();
+      expect(box, `${path}: ${await control.evaluate(element => element.outerHTML.slice(0, 180))}`).not.toBeNull();
+      expect(box!.width, `${path}: control width`).toBeGreaterThanOrEqual(44);
+      expect(box!.height, `${path}: control height`).toBeGreaterThanOrEqual(44);
+    }
   }
 });
 
@@ -193,13 +232,13 @@ test('a keyboard user can create and reopen a real inventory', async ({ page }) 
   await page.goto('/inventory');
   const addPlace = page.getByRole('button', { name: 'Add first place' });
   await addPlace.press('Enter');
-  await page.getByLabel('Place name').fill('Flat');
+  await page.locator('#place-dialog').getByLabel('Place name').fill('Flat');
   await page.getByRole('button', { name: 'Save place' }).press('Enter');
   await expect(page.getByText('Added Flat.')).toBeVisible();
   await page.getByRole('button', { name: 'Add first item' }).press('Enter');
-  await page.getByLabel('Item name').fill('Spare keys');
-  await page.getByLabel('Starting place').selectOption({ label: 'Flat' });
-  await page.getByLabel('Quantity').first().fill('2');
+  await page.locator('#item-dialog').getByLabel('Item name').fill('Spare keys');
+  await page.locator('#item-dialog').getByLabel('Starting place').selectOption({ label: 'Flat' });
+  await page.locator('#item-dialog').getByLabel('Quantity').fill('2');
   await page.getByRole('button', { name: 'Save item' }).press('Enter');
   await expect(page.getByRole('heading', { name: 'Spare keys' })).toBeVisible();
   await page.reload();
@@ -216,19 +255,11 @@ test('move errors explain how to fix the quantity', async ({ page }) => {
   await expect(page.getByRole('alert')).toHaveText('Only 8 available at the starting place.');
 });
 
-test('SPA navigation focuses the new page heading and unknown routes recover', async ({ page }) => {
+test('SPA navigation focuses the new page heading and updates route metadata', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Privacy' }).first().click();
   await expect(page.getByRole('heading', { name: 'Privacy in plain words' })).toBeFocused();
-  await page.goto('/missing-shelf');
-  await expect(page).toHaveTitle('Not found — Placeboard Inventory');
-  await expect(page.getByRole('link', { name: 'Return home' })).toBeVisible();
-});
-
-test('a returned license is stored, checked, and removed from the URL', async ({ page }) => {
-  await page.route('https://api.sociobot.in/**', route => route.fulfill({ json: { valid: true, reason: 'ok', expires_at: null } }));
-  await page.goto('/inventory?license=receipt-token');
-  await expect(page).toHaveURL(/\/inventory$/);
-  await expect(page.getByText('Supporter summary: 0 moves in the last 30 days.')).toBeVisible();
-  await expect.poll(() => page.evaluate(() => localStorage.getItem('sb_license:placeboard-inventory'))).toBe('receipt-token');
+  await expect(page).toHaveTitle('Privacy — Placeboard Inventory');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://placeboard-inventory.sociobot.in/privacy');
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /stores and protects/);
 });

@@ -3,6 +3,7 @@ export interface Place {
   name: string;
   parentId: string | null;
   createdAt: string;
+  archivedAt?: string;
 }
 
 export interface Item {
@@ -11,6 +12,7 @@ export interface Item {
   notes: string;
   createdAt: string;
   updatedAt: string;
+  archivedAt?: string;
 }
 
 export interface Stock {
