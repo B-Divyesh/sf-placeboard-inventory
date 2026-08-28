@@ -1,0 +1,9 @@
+{
+  "slug": "placeboard-inventory",
+  "title": "Placeboard Inventory",
+  "summary": "Find shared household items by place and record every move.",
+  "artifact_class": "pwa-offline",
+  "user": "Households with a kitchen, garage, shed, or multiple homes who need to find a shared item by its physical place and record transfers without a warehouse system.",
+  "smallest_useful_product": "Offline PWA with a visual place tree, multi-location quantities, move history, quick text search, and print labels.",
+  "monetization": "one-time"
+}
