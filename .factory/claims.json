@@ -21,6 +21,13 @@
     "sandbox": "fresh Chromium context; intercept all demo requests and assert every request is same-origin"
   },
   {
+    "id": "free-core",
+    "claim": "The complete inventory stays free.",
+    "where": "landing supporter section, README",
+    "test": "npm test -- --grep @claim:free-core",
+    "sandbox": "fresh Chromium context without a supporter verdict; create a place and item, then export JSON"
+  },
+  {
     "id": "multi-location-move",
     "claim": "One item can have quantities in several places; moves update counts and keep dated history, including stock entering or leaving.",
     "where": "live preview, how it works, README",

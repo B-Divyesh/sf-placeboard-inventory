@@ -38,11 +38,12 @@ Requirements: Node.js 22 and npm.
 ```sh
 npm install
 npm run dev
+npm run test:unit
 npm test
 npm run build
 ```
 
-`npm test` builds the production app and runs the Playwright claim, accessibility, mobile, and data tests. The exact deploy command is `npm run build`. It writes the static site to `dist/`, with `dist/index.html` at its root.
+`npm run test:unit` runs the isolated Vitest data and deployment-policy tests. `npm test` builds the production app and runs the Playwright claim, accessibility, mobile, and keyboard tests. The exact deploy command is `npm run build`. It writes the static site to `dist/`, with `dist/index.html` at its root.
 
 To run only one public claim:
 
@@ -58,7 +59,7 @@ Normal inventory use makes no third-party request. Data stays in local browser s
 
 ## Deployment
 
-Deploy the contents of `dist/` as a static site. `staticwebapp.config.json` provides SPA fallback, security headers, and the styled 404 response. The factory owns DNS, infrastructure, and billing setup.
+Deploy the contents of `dist/` as a static site. `staticwebapp.config.json` provides SPA fallback, security headers, the styled 404 response, immutable caching for versioned `/assets/*`, and revalidation for HTML and `sw.js`. The factory owns DNS, infrastructure, and billing setup.
 
 ## License
 

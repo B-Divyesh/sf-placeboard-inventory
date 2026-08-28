@@ -38,6 +38,25 @@ test('@claim:local-data sends no inventory data off origin', async ({ page }) =>
   expect(crossOrigin).toEqual([]);
 });
 
+test('@claim:free-core keeps the complete inventory available without a supporter verdict', async ({ page }) => {
+  await page.goto('/inventory');
+  await page.evaluate(() => localStorage.removeItem('sb_license_verdict:placeboard-inventory'));
+  await page.reload();
+  await expect(page.getByText('Supporter summary:')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Add place' }).click();
+  await page.getByLabel('Place name').fill('Free shelf');
+  await page.getByRole('button', { name: 'Save place' }).click();
+  await page.getByRole('button', { name: 'Add item' }).click();
+  await page.getByLabel('Item name').fill('Spare bulbs');
+  await page.getByLabel('Starting place').selectOption({ label: 'Free shelf' });
+  await page.getByLabel('Quantity').first().fill('3');
+  await page.getByRole('button', { name: 'Save item' }).click();
+  await expect(page.getByRole('heading', { name: 'Spare bulbs' })).toBeVisible();
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export JSON' }).click();
+  await expect(await downloadPromise).toBeTruthy();
+});
+
 test('@claim:multi-location-move updates both places and history', async ({ page }) => {
   await page.goto('/demo');
   await page.getByLabel('Search items and places').fill('AA batteries');
@@ -157,6 +176,17 @@ test('mobile inventory keeps actions visible', async ({ page }) => {
   await page.goto('/demo');
   await expect(page.getByRole('button', { name: 'Add item' })).toBeVisible();
   await expect(page.locator('body')).toHaveJSProperty('scrollWidth', 390);
+});
+
+test('mobile header controls meet the 44 pixel touch-target minimum', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  for (const control of [page.getByRole('link', { name: 'Placeboard Inventory' }), page.getByRole('link', { name: 'Demo' })]) {
+    const box = await control.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeGreaterThanOrEqual(44);
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
 });
 
 test('a keyboard user can create and reopen a real inventory', async ({ page }) => {

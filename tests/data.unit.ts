@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from 'vitest';
 import { fromCsv, moveStock, sampleData, toCsv, validateImport } from '../src/data';
 
 test('moveStock rejects quantities above the source count', () => {

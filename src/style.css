@@ -35,11 +35,11 @@ a:hover { color: var(--ink); }
 .shell { width: min(1180px, calc(100% - 32px)); margin-inline: auto; }
 .site-header { border-bottom: 1px solid var(--line); background: rgb(16 15 24 / .94); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); }
 .nav-wrap { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.wordmark { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font: 700 18px/1 var(--display); letter-spacing: .05em; text-decoration: none; text-transform: uppercase; }
+.wordmark { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 44px; min-height: 44px; color: var(--ink); font: 700 18px/1 var(--display); letter-spacing: .05em; text-decoration: none; text-transform: uppercase; }
 .mark { width: 34px; height: 34px; border: 2px solid var(--cyan); box-shadow: 3px 3px 0 var(--pink); display: grid; place-items: center; clip-path: polygon(0 0, 86% 0,100% 26%,100% 100%,14% 100%,0 74%); }
 .mark::before { content: ""; width: 16px; height: 10px; border-block: 4px solid var(--amber); }
 .site-nav { display: flex; align-items: center; gap: 18px; }
-.site-nav a { color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.site-nav a { color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: none; min-height: 44px; padding-inline: 8px; display: inline-flex; align-items: center; }
 .site-nav a[aria-current="page"] { color: var(--cyan); }
 .demo-banner { background: var(--amber); color: var(--amber-ink); padding: 8px 16px; text-align: center; font-weight: 700; }
 .demo-banner button { background: transparent; border: 0; color: inherit; min-height: 44px; text-decoration: underline; cursor: pointer; margin-left: 16px; }

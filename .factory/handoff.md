@@ -1,45 +1,71 @@
-# Placeboard Inventory v1 handoff — FAIL independent verification
+# Placeboard Inventory v1.0.1 repair handoff
 
-> Independent verification on 2026-08-28 found this candidate **FAILS release**. The deployed live JS is an exact hash match for commit `d5f577931e2a4ea9a7292e177335d02932f53b36`, and all 12 mandatory claim tests pass, but `npm run test:unit` fails from a clean checkout. Live hashed assets also have `Cache-Control: public, must-revalidate, max-age=30` rather than the required long-lived immutable caching. See `.factory/verification-1.md` for exact commands, evidence, and defects.
+This repair resolves every release blocker in independent verification report
+`.factory/verification-1.md` for candidate
+`d5f577931e2a4ea9a7292e177335d02932f53b36`. It preserves the offline,
+local-first household inventory artifact and its static PWA deployment class.
 
-## What shipped
+## Repaired findings
 
-- Offline-first Vite and TypeScript PWA at `/inventory`, with separate IndexedDB stores for real and demo data.
-- Nested place tree for homes, rooms, shelves, bins, cars, and other physical places.
-- One item across multiple places, stock moves in or out, dated move history, notes, and full-path search.
-- JSON and CSV import/export, printable labels for all places or one chosen place, empty/error/offline states, and install metadata.
-- One-click `/demo` with seven places, five items, eight stock positions, and three moves. Reset and exit controls never touch real data.
-- $14 one-time supporter pack through Sociobot checkout and license verification. Core inventory and exports remain free.
-- Original night-market storage art, responsive WebP variants, social card, icons, legal pages, metadata, sitemap, security headers, and styled offline/404 pages.
-- Keyboard route focus, visible focus treatment, 390 px responsive layout, reduced-motion behavior, and plain-language copy audit.
+- **Unit quality gate:** `npm run test:unit` now runs only `tests/**/*.unit.ts`
+  through `vitest.config.ts`. The formerly miscollected Playwright data tests
+  are real Vitest tests. The unit suite also asserts the deployed cache policy.
+- **Static cache policy:** `public/staticwebapp.config.json` now sets
+  `Cache-Control: public, max-age=31536000, immutable` for `/assets/*` and
+  leaves HTML globally revalidated. `sw.js` is explicitly `no-cache, no-store,
+  must-revalidate` so updates can be discovered.
+- **390 px targets:** the wordmark has a 44×44 px minimum hit area and nav
+  links have horizontal hit-area padding. A Playwright viewport test measures
+  both the wordmark and Demo link at 390 px.
+- **Free-core claim:** `.factory/claims.json` now maps “The complete inventory
+  stays free” to `@claim:free-core`. In a fresh no-license browser context the
+  test creates a place and item, then exports JSON.
 
-## How to run and verify
+## Run and verify
 
 ```sh
-npm install
-npm run dev
+npm ci
+npm run test:unit
 npm test
 npm run build
 ```
 
-The deploy command is exactly `npm run build`. Output lands in `dist/`, with `dist/index.html` at its root.
+Deploy with `npm run build`; `dist/index.html` is the static entry point.
 
-Final verification on 28 August 2026:
+Verification completed on 2026-08-28:
 
-- `npm test`: 21 passed, including all 12 tagged public claim tests.
-- `npm run build`: passed.
-- Production bundle: 11.27 KB gzip JavaScript and 3.86 KB gzip CSS. Mobile hero WebP: 25 KB.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/demo .factory/evidence`: HTTP 200, one `h1`, one `main`, no missing alt text, no unlabeled buttons, and no console errors.
-- Lighthouse mobile, landing: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.5 s, CLS 0, TBT 40 ms.
-- Lighthouse mobile, demo: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.4 s, CLS 0, TBT 0 ms.
-- Offline test: the controlled `/demo` route reloaded with the browser network disabled and retained sample data.
-- Route crawl: `/`, `/inventory`, `/demo`, `/print?demo=1`, `/privacy`, `/terms`, and the in-app 404 each returned usable pages with one `h1`, one `main`, no horizontal overflow, and no console errors.
+- `npm ci`: passed. `npm audit --omit=dev --json`: 0 production
+  vulnerabilities.
+- `npm run test:unit`: passed, 4 tests in 2 files. It includes the exact
+  static caching-policy regression assertion.
+- `npm test`: passed uninterrupted, 20 Chromium tests. This includes all 13
+  tagged public claims, offline controlled reload, separate demo storage,
+  privacy request interception, import/export, desktop, 390 px mobile,
+  keyboard, route-focus, invalid-move recovery, and license-return flows.
+- `npm run build`: passed with TypeScript no-emit checking. Output: 11.27 KB
+  gzip JavaScript and 3.87 KB gzip CSS; `dist/` contains its root `index.html`.
+  No separate linter is configured in this intentionally small TypeScript
+  project; the build type check is the available static-analysis gate.
+- Playwright Axe found zero serious or critical violations on `/`, `/demo`, and
+  `/privacy`. The same suite verifies reduced-motion-compatible UI and 44 px
+  mobile header targets. `verify-url.sh` against local `/demo` returned HTTP
+  200, one title/lang/main/h1, no missing image alt text or unlabeled buttons,
+  and no console errors. Evidence: `.factory/evidence-repair/verify.json` and
+  the desktop/mobile screenshots beside it.
+- The `@claim:offline-reload` browser test visited controlled `/demo`, disabled
+  networking, reloaded, retained sample data, and showed the offline status.
+  Service worker/update source behavior remains unchanged; cache routing is now
+  covered by the deployment-policy unit test.
+- The build contains only same-origin assets plus the explicit Sociobot billing
+  endpoint in `connect-src`; normal inventory flows make no third-party request.
 
-Evidence is in `.factory/evidence/`. Public claims and their exact test commands are in `.factory/claims.json`.
+## Known limits
 
-## Known gaps and next steps
-
-- This v1 intentionally has no cloud sync, shared accounts, photos, barcode database, valuation, or insurance reporting.
-- Browser data can be lost when site storage is cleared. Users should export JSON backups before clearing data or changing devices.
-- The factory must register the paid product slug before the live checkout can sell licenses. No payment-provider secret or product ID is stored here.
-- Deployment, DNS, billing registration, and live-origin checks remain factory operations outside this repository.
+- There is no cloud sync, shared account, photos, barcode database, valuation,
+  or insurance reporting. Browser storage can be cleared, so export JSON before
+  clearing site data or moving devices.
+- The supporter product must be registered by the factory before live checkout
+  can sell licenses. No billing secret or payment-provider code is present.
+- Deployment, DNS, and live-origin header confirmation are factory operations;
+  this repair includes the static deployment configuration and regression test
+  required for the immutable asset policy.
