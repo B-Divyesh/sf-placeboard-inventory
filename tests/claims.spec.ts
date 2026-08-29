@@ -50,10 +50,11 @@ test('@claim:sample-data provides the documented places, items, and moves', asyn
   expect(value.moves).toHaveLength(3);
 });
 
-test('@claim:local-data sends no inventory data off origin', async ({ page }) => {
+test('@claim:local-data sends no inventory data off origin', async ({ page, baseURL }) => {
   const crossOrigin: string[] = [];
+  const allowedOrigin = new URL(baseURL!).origin;
   page.on('request', request => {
-    if (new URL(request.url()).origin !== 'http://127.0.0.1:4173') crossOrigin.push(request.url());
+    if (new URL(request.url()).origin !== allowedOrigin) crossOrigin.push(request.url());
   });
   await page.goto('/demo');
   await page.getByLabel('Search items and places').fill('batteries');

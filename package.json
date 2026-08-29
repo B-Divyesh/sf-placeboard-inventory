@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "npm run build && playwright test",
+    "test:live": "node scripts/live-audit.mjs",
     "test:unit": "vitest run --config vitest.config.ts"
   },
   "devDependencies": {
