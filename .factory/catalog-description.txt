@@ -1,1 +1,1 @@
-Find household items by place and record every move.
+Find shared household items by room, shelf, or bin and record every move.

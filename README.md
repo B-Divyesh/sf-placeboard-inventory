@@ -29,7 +29,7 @@ Technical note: demo data uses `placeboard-demo-v1`; real data uses `placeboard-
 - Imports Placeboard JSON and CSV files.
 - Stores inventory in this browser.
 
-All inventory tools are free. Placeboard is not an insurance record, valuation tool, barcode catalog, or warehouse system.
+All inventory tools are free. Inventory data stays in this browser unless you export it.
 
 ## Develop and verify
 

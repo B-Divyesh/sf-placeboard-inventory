@@ -13,17 +13,30 @@ test('@claim:offline-reload works offline after the first visit', async ({ page,
 });
 
 test('@claim:demo-sandbox keeps demo changes away from real data', async ({ page }) => {
+  await page.goto('/inventory');
+  await page.getByRole('button', { name: 'Add place' }).click();
+  await page.locator('#place-dialog').getByLabel('Place name').fill('Real linen shelf');
+  await page.getByRole('button', { name: 'Save place' }).click();
   await page.goto('/?demo=1');
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page.getByText('Demo — sample data, nothing is saved to your inventory')).toBeVisible();
+  await expect(page.getByText('Real linen shelf')).toHaveCount(0);
   await page.getByRole('button', { name: 'Add place' }).click();
   await page.locator('#place-dialog').getByLabel('Place name').fill('Attic trunk');
   await page.getByRole('button', { name: 'Save place' }).click();
   await expect(page.getByRole('link', { name: 'Attic trunk 0 items here' })).toBeVisible();
+  await page.getByRole('button', { name: 'Reset demo' }).click();
+  await expect(page.getByText('Sample data was reset.')).toBeVisible();
+  await expect(page.getByText('Attic trunk')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'AA batteries' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add place' }).click();
+  await page.locator('#place-dialog').getByLabel('Place name').fill('Demo-only crate');
+  await page.getByRole('button', { name: 'Save place' }).click();
   await page.getByRole('button', { name: 'Start for real' }).click();
   await expect(page).toHaveURL(/\/inventory$/);
   await expect(page.getByText('Attic trunk')).toHaveCount(0);
-  await expect(page.getByText('Your rooms, shelves, and bins will appear here.')).toBeVisible();
+  await expect(page.getByText('Demo-only crate')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Real linen shelf 0 items here' })).toBeVisible();
 });
 
 test('@claim:sample-data provides the documented places, items, and moves', async ({ page }) => {
@@ -196,7 +209,7 @@ test('@claim:print-labels prints all or one chosen place', async ({ page }) => {
 });
 
 test('every application route has no serious accessibility findings', async ({ page }) => {
-  for (const path of ['/', '/demo', '/inventory', '/privacy', '/terms', '/print?demo=1', '/404.html']) {
+  for (const path of ['/', '/demo', '/inventory', '/privacy', '/terms', '/print?demo=1', '/offline.html', '/404.html']) {
     await page.goto(path);
     const result = await new AxeBuilder({ page: page as never }).analyze();
     expect(result.violations.filter(item => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
@@ -236,7 +249,7 @@ test('desktop first screen includes the first action, its result, and all facts'
 
 test('all visible mobile controls meet the 44 pixel touch-target minimum', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const path of ['/', '/demo', '/privacy', '/terms', '/print?demo=1', '/404.html']) {
+  for (const path of ['/', '/demo', '/privacy', '/terms', '/print?demo=1', '/offline.html', '/404.html']) {
     await page.goto(path);
     const controls = page.locator('a, button, input:not([type="file"]), select, textarea, label.button');
     for (let index = 0; index < await controls.count(); index += 1) {

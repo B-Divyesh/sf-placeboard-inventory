@@ -1,4 +1,4 @@
-const VERSION = 'placeboard-v1.1.1';
+const VERSION = 'placeboard-v__APP_VERSION__';
 const SHELL = ['/', '/inventory', '/demo', '/privacy', '/terms', '/offline.html', '/static.css', '/manifest.webmanifest', '/favicon.svg', '/assets/placeboard-market.webp', '/assets/placeboard-market-720.webp'];
 self.addEventListener('install', event => event.waitUntil((async () => {
   const cache = await caches.open(VERSION);

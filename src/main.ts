@@ -2,6 +2,8 @@ import './style.css';
 import { addItem, addPlace, archiveItem, archivePlace, discardDemo, editItem, editPlace, fromCsv, loadData, moveStock, placePath, resetDemo, saveData, toCsv, validateImport } from './data';
 import type { InventoryData, Place } from './types';
 
+declare const __APP_VERSION__: string;
+
 const app = document.querySelector<HTMLDivElement>('#app')!;
 let data: InventoryData | null = null;
 let demoMode = false;
@@ -57,7 +59,7 @@ function header(path: string): string {
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><div class="shell footer-grid"><div>Find household items by place.<br><small>Original generated imagery · v1.1.1 · polish-2</small></div><div class="footer-links"><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in">Built by Param Factory <span class="sr-only">(external site)</span></a></div></div></footer>`;
+  return `<footer class="site-footer"><div class="shell footer-grid"><div>Find household items by place.<br><small>Original generated imagery · v${__APP_VERSION__} · polish-3</small></div><div class="footer-links"><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in">Built by Param Factory <span class="sr-only">(external site)</span></a></div></div></footer>`;
 }
 
 function layout(path: string, content: string, demoBanner = false): void {
@@ -112,9 +114,9 @@ function landing(): string {
       </div>
     </div></section>
 
-    <section class="section" aria-labelledby="limits-title"><div class="shell">
-      <div class="section-head"><h2 id="limits-title">Made for finding, not valuing</h2><p>This household inventory stays in this browser. It does not value items or run a warehouse.</p></div>
-      <div class="boundary"><div><h3>Keep and export your inventory</h3><p>Your inventory uses browser storage. Export JSON or CSV whenever you want a backup.</p></div><div><h3>What Placeboard does not do</h3><p>It does not value items or run a warehouse.</p></div></div>
+    <section class="section" aria-labelledby="privacy-title"><div class="shell">
+      <div class="section-head"><h2 id="privacy-title">Keep your inventory in this browser</h2><p>Inventory data stays in this browser unless you export it.</p></div>
+      <div class="boundary"><div><h3>Back up your inventory</h3><p>Export JSON or CSV whenever you want a backup.</p></div><div><h3>Bring in an existing inventory</h3><p>Import a Placeboard JSON or CSV file.</p></div></div>
     </div></section>
   </main>`;
 }
@@ -124,7 +126,7 @@ function privacyPage(): string {
 }
 
 function termsPage(): string {
-  return `<main id="main" class="shell prose"><p class="eyebrow">Legal · updated 28 August 2026</p><h1 tabindex="-1">Terms for local inventory</h1><p>Use Placeboard to track household items by physical place. The app is provided as-is.</p><h2>Not an insurance record</h2><p>Placeboard does not assess value, prove ownership, or replace an insurance inventory.</p><h2>Your backups</h2><p>You control your local data. Export it before clearing browser storage or changing devices.</p><h2>Acceptable use</h2><p>Do not use the app to break the law or interfere with the service.</p><h2>Contact</h2><p>Questions can go to <a class="legal-contact" href="mailto:support@sociobot.in">support@sociobot.in</a>.</p></main>`;
+  return `<main id="main" class="shell prose"><p class="eyebrow">Legal · updated 29 August 2026</p><h1 tabindex="-1">Terms for local inventory</h1><p>Use Placeboard to track household items by physical place. The app is provided as-is.</p><h2>Your records</h2><p>You are responsible for the records you add and the way you use them.</p><h2>Your backups</h2><p>You control your local data. Export it before clearing browser storage or changing devices.</p><h2>Acceptable use</h2><p>Do not use the app to break the law or interfere with the service.</p><h2>Contact</h2><p>Questions can go to <a class="legal-contact" href="mailto:support@sociobot.in">support@sociobot.in</a>.</p></main>`;
 }
 
 function notFoundPage(): string {
