@@ -1,0 +1,107 @@
+{
+  "url": "https://placeboard-inventory.sociobot.in/",
+  "status": 200,
+  "headers": {
+    "cache-control": "no-cache, max-age=0, must-revalidate",
+    "content-encoding": "br",
+    "content-security-policy": "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+    "content-type": "text/html",
+    "date": "Sat, 29 Aug 2026 05:06:09 GMT",
+    "etag": "\"39156456\"",
+    "last-modified": "Sat, 29 Aug 2026 04:45:07 GMT",
+    "permissions-policy": "camera=(), microphone=(), geolocation=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+    "vary": "Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-xss-protection": "1; mode=block"
+  },
+  "title": "Placeboard Inventory — Find household items by place",
+  "firstViewport": [
+    {
+      "tag": "A",
+      "text": "Placeboard Inventory",
+      "top": 14
+    },
+    {
+      "tag": "A",
+      "text": "Inventory",
+      "top": 14
+    },
+    {
+      "tag": "A",
+      "text": "Demo",
+      "top": 14
+    },
+    {
+      "tag": "A",
+      "text": "Privacy",
+      "top": 14
+    },
+    {
+      "tag": "P",
+      "text": "Household inventory organized by place",
+      "top": 113
+    },
+    {
+      "tag": "H1",
+      "text": "Find household items by where you stored them",
+      "top": 147
+    },
+    {
+      "tag": "P",
+      "text": "For households that share cupboards, bins, sheds, or homes and need one clear place to look.",
+      "top": 502
+    },
+    {
+      "tag": "A",
+      "text": "Try it with sample data",
+      "top": 633
+    },
+    {
+      "tag": "A",
+      "text": "Start my inventory",
+      "top": 654
+    },
+    {
+      "tag": "LI",
+      "text": "Works offline after your first visit.",
+      "top": 753
+    },
+    {
+      "tag": "LI",
+      "text": "Inventory data stays on this device.",
+      "top": 784
+    },
+    {
+      "tag": "LI",
+      "text": "All inventory tools are free.",
+      "top": 815
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/placeboard-market.webp",
+      "type": "image"
+    }
+  ],
+  "consoleMessages": [],
+  "pageErrors": []
+}

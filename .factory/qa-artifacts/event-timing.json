@@ -1,0 +1,20 @@
+{
+  "events": [
+    {
+      "name": "pointerdown",
+      "duration": 24,
+      "interactionId": 4114
+    },
+    {
+      "name": "pointerup",
+      "duration": 24,
+      "interactionId": 4114
+    },
+    {
+      "name": "click",
+      "duration": 24,
+      "interactionId": 4114
+    }
+  ],
+  "maxDurationMs": 24
+}

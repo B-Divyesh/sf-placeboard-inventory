@@ -1,0 +1,8 @@
+candidate=4764e1b343921f445b56872c073d80b7c4513cbc
+38b51783d22e3459dee09ceda37bc089c408f971f57f7246aef27801b697d94a  /tmp/tmp.JbvaZ7J7PQ/live.js
+38b51783d22e3459dee09ceda37bc089c408f971f57f7246aef27801b697d94a  dist/assets/index-BZMWaEIu.js
+615081bd0aeae3e635ab398d8dc68c8a5e2d573a5bfa4c40235d0d4bd86a74cb  /tmp/tmp.JbvaZ7J7PQ/live.css
+615081bd0aeae3e635ab398d8dc68c8a5e2d573a5bfa4c40235d0d4bd86a74cb  dist/assets/index-B_LmvHbJ.css
+js_gzip_bytes=11459
+css_gzip_bytes=3971
+mobile_hero_bytes=25426

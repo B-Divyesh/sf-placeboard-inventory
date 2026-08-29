@@ -1,0 +1,17 @@
+[
+  {
+    "dialog": "Move or add",
+    "seriousOrCritical": [],
+    "allViolations": []
+  },
+  {
+    "dialog": "Add place",
+    "seriousOrCritical": [],
+    "allViolations": []
+  },
+  {
+    "dialog": "Add item",
+    "seriousOrCritical": [],
+    "allViolations": []
+  }
+]

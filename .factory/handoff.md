@@ -1,63 +1,24 @@
-# Placeboard Inventory — polish round 3 handoff
+# Placeboard Inventory — independent verification 3 handoff
 
 ## Outcome
 
-Round 3 is complete and deployed at <https://placeboard-inventory.sociobot.in>. Every finding from reviews 1–3 is closed; the cumulative mapping and evidence are in `.factory/polish-3.md`.
+**PASS** for candidate `4764e1b343921f445b56872c073d80b7c4513cbc` at <https://placeboard-inventory.sociobot.in>, verified 2026-08-29 UTC.
 
-The released product remains a static, offline PWA with its night-market visual identity. There is no runtime AI or paid checkout because neither serves the researched job, and the reviewed billing endpoint was unavailable.
+The live deployment matches the candidate’s hashed JS and CSS byte for byte. The mandatory cold first-read and one-click sample demo pass. All 13 claim commands, 10 unit tests, 21 Playwright tests, TypeScript/build, dependency audit, live route audit, Axe checks, PWA offline reload, and performance budgets pass. No P0–P3 product defect was found.
 
-## What changed
+Full results: [`.factory/verification-3.md`](./verification-3.md). Fresh evidence: [`.factory/qa-artifacts/`](./qa-artifacts/).
 
-- Removed all remaining unlisted insurance, valuation, barcode, and warehouse boundaries from landing, README, and Terms copy. The section now describes tested browser storage, export, and import behavior.
-- Added complete Open Graph and Twitter metadata to `/offline.html` and `/404.html`. Both operational documents are explicitly `noindex`; offline remains outside the sitemap.
-- Made `package.json` version `1.1.1` the build source for app footers, static footers, manifest cache-buster, and service-worker cache. The build rejects package/lock mismatches or missing release placeholders.
-- Strengthened `@claim:demo-sandbox`: it seeds real data, enters through `/?demo=1`, edits and resets the demo, leaves, and proves real data remains while demo data does not.
-- Added claim-registry, release-alignment, static-metadata, and prohibited-boundary regression tests.
-- Added `npm run test:live`, which checks cold first screens, demo isolation/reset, history focus, all route metadata, legal links, mobile targets, Axe, real 404 status, dead links, console errors, and release markers.
-- Updated the catalog line to “Find shared household items by room, shelf, or bin and record every move.” (73 characters, verb first).
+## Key evidence
 
-## Exact verification evidence
-
-Repair/verification commit: `d4e5aeb0d32ae3fa58589cab9859d493872c65c3`.
-
-Final clean clone: `/tmp/placeboard-polish3-final-TQupbR/repo`.
-
-- `npm ci`: passed; 0 vulnerabilities.
-- Every one of the 13 commands declared in `.factory/claims.json`: passed separately, one tagged test per claim.
-- `npm test`: 21/21 Playwright tests passed with its own preview server.
-- `npm run test:unit`: 10/10 Vitest data/deployment tests passed.
-- `npm run build`: passed; `dist/index.html` exists at the required root.
-- Bundle: JS 39.68kB (11.49kB gzip); CSS 13.72kB (3.96kB gzip).
-- `npm audit --audit-level=high`: 0 vulnerabilities.
-
-Accessibility, privacy, offline, and routing:
-
-- Integrated Axe: zero serious/critical findings on `/`, `/demo`, `/inventory`, `/privacy`, `/terms`, `/print?demo=1`, `/offline.html`, and `/404.html`.
-- All visible controls on those mobile routes meet 44×44 CSS pixels.
-- Offline claim reloads the controlled live `/demo` while the browser context is offline.
-- Demo audit preserved pre-existing real data, reset sample edits, removed the demo database on exit, and observed no cross-origin request.
-- Route navigation moves focus to the new h1; Back restores landing focus and title.
-- Arbitrary live `/definitely-missing-polish-3` returns HTTP 404 with one h1, Return home, Privacy, and Terms.
-- All 26 discovered live links returned HTTP below 400; `mailto:` links were explicitly exempt.
-- Factory `verify-url.sh` passed live root, direct `/?demo=1`, offline, and 404 pages with zero console errors.
-
-Performance:
-
-- Local Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.21s, CLS 0, TBT 12ms.
-- Live Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.05s, CLS 0, TBT 11.5ms.
-- Live/local asset hashes match: JS `38b51783…97d94a`; CSS `615081bd…a74cb`.
-
-Evidence files:
-
-- `.factory/evidence-polish-3/live-audit.json`
-- `.factory/evidence-polish-3/lighthouse-local.json`
-- `.factory/evidence-polish-3/lighthouse-live.json`
-- `.factory/evidence-polish-3/live-root/`
-- `.factory/evidence-polish-3/live-demo/`
-- `.factory/evidence-polish-3/live-offline/`
-- `.factory/evidence-polish-3/live-404/`
-
-Deployment: Azure Static Web Apps production deployment `ac8be14a-5927-4dd1-b386-4646d4e897d0` succeeded. The custom domain returned HTTPS 200. A cold post-deploy full browser run passed 21/21 against the live origin.
+- First screen states the job, household audience, **Try it with sample data**, what that action does, and all three required facts at desktop and 390 px mobile sizes.
+- One click opens stocked `/demo`; its persistent banner offers reset and exit. Demo edits remain separate from real IndexedDB data and are discarded on exit.
+- Independent invalid and recovery checks passed for same-place moves, overdraw, blank forms, malformed JSON, wrong CSV columns, and subsequent valid input.
+- Keyboard skip/focus/dialog behavior passed. Axe found zero serious/critical issues on every route and zero issues in the three open inventory dialogs.
+- Browser inventory traffic stayed same-origin. Security and caching headers are correctly deployed.
+- The active `placeboard-v1.1.1` service worker controlled an offline demo reload and retained sample data.
+- Fresh mobile Lighthouse: 100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.154 s, CLS 0, TBT 17 ms.
+- Bundles: 11,459-byte gzip JS, 3,971-byte gzip CSS, no fonts, 25,426-byte mobile hero.
+- Potential factory verification traffic is rate-limited: a 50-request burst returned 30 × 200 and 20 × 429, with `Retry-After: 2` on every 429.
 
 ## Run and verify
 
@@ -66,15 +27,13 @@ npm ci
 npm run test:unit
 npm test
 npm run build
+npm audit --audit-level=high
+EVIDENCE_PATH=.factory/qa-artifacts/live-audit.json npm run test:live
+node .factory/qa-artifacts/adversarial-live.mjs
 ```
 
-To repeat production checks:
+## Known gaps and next steps
 
-```sh
-npm run test:live
-PLAYWRIGHT_BASE_URL=https://placeboard-inventory.sociobot.in npx playwright test
-```
+There is no product-code blocker. The brief’s one-time monetization is not exposed because the required Sociobot checkout still returns HTTP 404. The candidate correctly avoids showing a dead checkout and keeps all inventory tools free. Product registration is an external factory task if monetization is revisited; after registration, add the paid flow and observable claims before exposing it.
 
-## Known gaps
-
-None observed. No review finding, claim, or required quality gate remains open.
+No sign-in, backend, library, or CLI exists, so Entra, backend concurrency, and package-consumer checks do not apply.

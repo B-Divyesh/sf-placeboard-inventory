@@ -1,0 +1,190 @@
+{
+  "origin": "https://placeboard-inventory.sociobot.in",
+  "checkedAt": "2026-08-29T05:09:17.776Z",
+  "checks": {
+    "firstScreen": {
+      "mobile": {
+        "Try it with sample data": 523,
+        "Opens a stocked sample. Your inventory is unchanged.": 567,
+        "Works offline after your first visit.": 669,
+        "Inventory data stays on this device.": 699,
+        "All inventory tools are free.": 730
+      },
+      "desktop": {
+        "Try it with sample data": 681,
+        "Opens a stocked sample. Your inventory is unchanged.": 725,
+        "Works offline after your first visit.": 778,
+        "Inventory data stays on this device.": 809,
+        "All inventory tools are free.": 840
+      }
+    },
+    "demoIsolation": {
+      "directPath": "/demo",
+      "reset": true,
+      "realDataPreserved": true,
+      "demoDatabaseDiscarded": true,
+      "crossOriginRequests": []
+    },
+    "historyFocus": true,
+    "routes": [
+      {
+        "path": "/",
+        "title": "Placeboard Inventory — Find household items by place",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/demo",
+        "title": "Demo — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/inventory",
+        "title": "Inventory — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/privacy",
+        "title": "Privacy — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/terms",
+        "title": "Terms — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/print?demo=1",
+        "title": "Print labels — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/offline.html",
+        "title": "Offline — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      },
+      {
+        "path": "/404.html",
+        "title": "Not found — Placeboard Inventory",
+        "seriousAxeViolations": 0
+      }
+    ],
+    "unknownRoute": {
+      "status": 404,
+      "oneH1": true,
+      "legalLinks": true
+    },
+    "links": [
+      {
+        "href": "https://placeboard-inventory.sociobot.in/#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/inventory",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/demo",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/privacy",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/terms",
+        "status": 200
+      },
+      {
+        "href": "https://sociobot.in/",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/demo#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/demo#items",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=car&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=home&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=garage&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=red-bin&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=hall&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=kitchen&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=pantry&demo=1",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/inventory#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/inventory#items",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?place=place-e4f055d0-2cb7-4e2a-acc1-fbfcf30e65ba",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/privacy#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/terms#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/print?demo=1#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/offline.html#main",
+        "status": 200
+      },
+      {
+        "href": "https://placeboard-inventory.sociobot.in/404.html#main",
+        "status": 200
+      }
+    ],
+    "release": {
+      "footer": "v1.1.1 · polish-3",
+      "manifestStartUrl": "/inventory?v=1.1.1",
+      "serviceWorkerCache": "placeboard-v1.1.1"
+    }
+  },
+  "consoleErrors": [],
+  "result": "pass"
+}

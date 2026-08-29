@@ -1,0 +1,154 @@
+{
+  "checkedAt": "2026-08-29T05:12:51.178Z",
+  "origin": "https://placeboard-inventory.sociobot.in",
+  "checks": {
+    "oneClickDemo": {
+      "path": "/demo",
+      "banner": true,
+      "sampleVisible": true
+    },
+    "searchAndMoves": {
+      "zeroResultRecovery": true,
+      "samePlaceRejected": true,
+      "overdrawRejected": true,
+      "boundaryQuantityEightAccepted": true,
+      "persisted": true
+    },
+    "importRecovery": {
+      "invalidJson": true,
+      "invalidCsv": true,
+      "validCsvAfterErrors": true,
+      "nestedPath": true
+    },
+    "placeValidation": {
+      "blankRejected": true,
+      "browserMessage": "Please fill out this field.",
+      "recoverySucceeded": true
+    },
+    "keyboard": {
+      "skipFirst": true,
+      "focus": {
+        "text": "Skip to content",
+        "outlineStyle": "solid",
+        "outlineWidth": "3px",
+        "outlineColor": "rgb(255, 200, 87)"
+      },
+      "enterOpensDialog": true,
+      "escapeClosesDialog": true,
+      "focusReturned": true
+    },
+    "privacy": {
+      "crossOriginRequests": [],
+      "totalRequests": 17
+    },
+    "mobile": {
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "viewportMeta": "width=device-width, initial-scale=1.0, viewport-fit=cover",
+      "undersized": [],
+      "transitionDuration": "1e-05s",
+      "animationDuration": "1e-05s"
+    },
+    "pwa": {
+      "controlled": true,
+      "active": "https://placeboard-inventory.sociobot.in/sw.js",
+      "waiting": false,
+      "caches": [
+        "placeboard-v1.1.1"
+      ],
+      "offlineReload": true,
+      "sampleVisibleOffline": true,
+      "offlineStatusVisible": true
+    }
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/placeboard-market.webp",
+      "type": "image"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/demo",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/demo",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/placeboard-market.webp",
+      "type": "image"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/inventory",
+      "type": "document"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-BZMWaEIu.js",
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "url": "https://placeboard-inventory.sociobot.in/assets/index-B_LmvHbJ.css",
+      "type": "stylesheet"
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "result": "pass"
+}
